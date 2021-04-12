@@ -258,7 +258,7 @@ function _M:find(key)
     while n ~= nil do
         local hr = fn(key, n)
         if hr == 0 then
-            return self._value[n]
+            return n, self._value[n]
         elseif hr < 0 then
             n = self._left[n]
         else
