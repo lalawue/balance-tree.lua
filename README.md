@@ -70,7 +70,6 @@ end
 3.29 GHz Intel Core i5 GHz Intel Core i5
 
 ```
--- performance, round:1
 14) test performance, every round 1,000,000, then clear
 round 1: 0.990936s, avg: 0.990936s
 round 2: 0.986641s, avg: 0.9887885s
