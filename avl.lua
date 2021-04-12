@@ -6,7 +6,6 @@
 --
 
 --[[
-   avl will keep only one value instance, for node <-> value mapping,
    code sample from https://github.com/skywind3000/avlmini
 ]]
 
@@ -135,7 +134,7 @@ local function _linkChild(self, sw, key)
         elseif sw < 0 then
             self._left[self._pr] = key
         else
-            self._right[self.__pr] = key
+            self._right[self._pr] = key
         end
     end
 end
@@ -194,7 +193,7 @@ end
 -- return next key and value
 function _M:next(key)
     if key == nil then
-        return nil, nil
+        return nil
     end
     local item = self._right[key]
     if item ~= nil then
@@ -215,7 +214,7 @@ function _M:next(key)
         end
     end
     if item == nil then
-        return nil, nil
+        return nil
     end
     return item, self._value[item]
 end
@@ -247,6 +246,26 @@ function _M:prev(key)
         return nil, nil
     end
     return item, self._value[item]
+end
+
+-- find key/value
+function _M:find(key)
+    if key == nil or self._count <= 0 then
+        return nil
+    end
+    local n = self._head
+    local fn = self._fn
+    while n ~= nil do
+        local hr = fn(key, n)
+        if hr == 0 then
+            return self._value[n]
+        elseif hr < 0 then
+            n = self._left[n]
+        else
+            n = self._right[n]
+        end
+    end
+    return nil
 end
 
 -- insert key with value, default not replace
@@ -285,7 +304,7 @@ end
 
 -- remove key and return value
 function _M:remove(key)
-    if key == nil then
+    if key == nil or self._height[key] == nil then
         return nil
     end
     local value = self._value[key]    
@@ -333,6 +352,7 @@ function _M:remove(key)
     if parent ~= nil then
         _reBalance(self, parent)
     end
+    self._count = self._count - 1
     return value
 end
 
@@ -347,22 +367,22 @@ function _M:walk(seq)
         seq = true
     end
     local key 
-    local height
+    local value
     if seq then
-        key, height = self:first()
+        key, value = self:first()
     else
-        key, height = self:last()
+        key, value = self:last()
     end
     return function()
         if key ~= nil then
-            local ret_key = key
-            local ret_height = height
+            local rkey = key
+            local rvalue = value
             if seq then
-                key, height = self:next(key)
+                key, value = self:next(key)
             else
-                key, height = self:prev(key)
+                key, value = self:prev(key)
             end
-            return ret_key, ret_height
+            return rkey, rvalue
         else
             return nil
         end
@@ -398,7 +418,7 @@ function _M:range(from, to)
                 break
             end
             key = self:next(key)
-        elseif step < 0 then
+        else
             if idx < from then
                 break
             end
@@ -410,7 +430,7 @@ end
 
 -- clear
 function _M:clear()
-    if sef._count <= 0 then
+    if self._count <= 0 then
         return
     end
     self._count = 0
@@ -422,8 +442,19 @@ function _M:clear()
     self._value = {}
 end
 
+-- get key height
+function _M:height(key)
+    if key == nil or self._count <= 0 then
+        return -1
+    end
+    return self._height[key] or -1
+end
+
 -- compare_fn(key1, key2) return -1, 0, 1 when <, =, >
 local function _new(compare_fn)
+    if compare_fn == nil then
+        return nil
+    end
     local ins = {
         _count = 0,
         _head = nil,
