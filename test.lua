@@ -95,7 +95,7 @@ function test_find_delete_replace(tree)
     print("   count: " .. tree:count())
 end
     
-function test_performance()
+function test_performance(tree)
     print("\n14) test performance, every round 1,000,000, then clear")
     local round = 0
     local last = os.clock()
