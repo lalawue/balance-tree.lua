@@ -13,9 +13,12 @@ description = {
    license = "MIT/X11",
    maintainer = "lalawue <suchaaa@gmail.com>"
 }
+dependencies = {
+   "lua >= 5.1"
+}
 build = {
    type = "builtin",
    modules = {
-      ["balance-tree.lua"] = { "balance-tree.lua" }
+      ["balance-tree"] = "balance-tree.lua"
    }
 }
