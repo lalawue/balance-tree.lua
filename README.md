@@ -1,13 +1,13 @@
 
 # About
 
-avl.lua was a AVL tree container implement.
+balance-tree.lua was a self-balancing Binary Search Tree implement.
 
 # Usage
 
 ```lua
 
-local tree = require("avl").new(function(a, b)
+local tree = require("balance-tree").new(function(a, b)
    return a - b
 end)
 

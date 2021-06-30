@@ -5,7 +5,7 @@
 -- under the terms of the MIT license. See LICENSE for details.
 --
 
-local tree = require("avl").new(function(a, b)
+local tree = require("balance-tree").new(function(a, b)
     return a - b
 end)
 
